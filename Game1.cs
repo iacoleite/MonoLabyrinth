@@ -142,6 +142,7 @@ namespace MovingRectangleGame
            if (_player.Intersects(_exit)){
             //  _spriteBatch.DrawString(_font, "Attenzione: qualcosa è andato storto!", new Vector2(100, 100), Color.Red);
              Thread.Sleep(2000);
+             
             Initialize();
            }
 
