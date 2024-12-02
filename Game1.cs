@@ -6,6 +6,7 @@ using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections;
 
 
 namespace MovingRectangleGame
@@ -44,35 +45,70 @@ namespace MovingRectangleGame
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.ApplyChanges();
+            
 
 
             // Inizializzazione del rettangolo del giocatore
-            _player = new Rectangle(10, 10, 30, 30);
+
             Random random= new Random();
 
             // Inizializzazione dell'ostacolo
-            _exit = new Rectangle(random.Next(1600,_graphics.PreferredBackBufferWidth-50), random.Next(1,_graphics.PreferredBackBufferHeight-50), 30, 30);
             int _nOstacolli = 50;
 
-            for(int I=0;I<_nOstacolli;I++){
-                
-                int xx=random.Next(100,_graphics.PreferredBackBufferWidth-100);
-                
-                int yy=random.Next(1,_graphics.PreferredBackBufferHeight);
-                var ob=new Rectangle(xx, yy, 80, 20);
-                if(ob.Intersects(_exit) || obs.Any(ele => ob.Intersects(ele))){
-                    --I;
-                    continue;
+            int screenWidth = _graphics.PreferredBackBufferWidth-100;
+            int screenHeight = _graphics.PreferredBackBufferHeight-100;
+            int gridWidth = Math.Abs(screenWidth/37);
+            int gridHeight = Math.Abs(screenHeight/37);
+
+            // Console.WriteLine(screenHeight);
+            // Console.WriteLine(screenWidth);
+            // Console.WriteLine(gridHeight);
+            // Console.WriteLine(gridWidth);
+            MazeGenerator mazeGenerator = new MazeGenerator();
+            
+            // mazeGenerator.GenerateMaze();
+            // int[,] teste = mazeGenerator.GetMaze();
+            // foreach(int i in teste) {
+
+            //     Console.WriteLine(i);
+            // }
+            MazeGenerator.GenerateMaze();
+            int [,] teste = MazeGenerator.PrintMaze();
+
+            for (int i = 0; i < MazeGenerator.width; i++) {
+                for (int j = 0; j < MazeGenerator.height; j++) {
+                    if (teste[i,j] == 1) {
+                        var ob=new Rectangle(100 + i * 40, 10 + j * 40, 40, 40);
+                        if(!ob.Intersects(_exit) || !(i == 0 && j == 0)) {
+                        obs.Add(ob);
+                        }
+                    }
                 }
-                obs.Add(ob);
             }
+            _player = new Rectangle(150, 50, 30, 30);
+            _exit = new Rectangle(1700, 935, 30, 30);
+
+            // for(int I=0;I<_nOstacolli;I++){
+                
+            //     int xx=random.Next(100,_graphics.PreferredBackBufferWidth-100);
+                
+            //     int yy=random.Next(1,_graphics.PreferredBackBufferHeight);
+            //     var ob=new Rectangle(xx, yy, 80, 20);
+            //     if(ob.Intersects(_exit) || obs.Any(ele => ob.Intersects(ele))){
+            //         --I;
+            //         continue;
+            //     }
+            //     obs.Add(ob);
+            // }
 
             base.Initialize();
-        }
+            }
+        
 
         protected override void LoadContent()
         {
-            
+                        
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Crea una texture per colorare il rettangolo del giocatore
@@ -141,8 +177,8 @@ namespace MovingRectangleGame
            
            if (_player.Intersects(_exit)){
             //  _spriteBatch.DrawString(_font, "Attenzione: qualcosa è andato storto!", new Vector2(100, 100), Color.Red);
-             Thread.Sleep(2000);
-             
+            Thread.Sleep(2000);
+            obs.Clear();
             Initialize();
            }
 
@@ -151,7 +187,8 @@ namespace MovingRectangleGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+                    
+            _graphics.GraphicsDevice.Clear(Color.Green);
 
             _spriteBatch.Begin();
 
@@ -164,7 +201,7 @@ namespace MovingRectangleGame
             }
             
             // _spriteBatch.Draw(ExitTexture,_exit,Color.White);
-            _spriteBatch.Draw(ExitTexture, new Vector2(_exit.X,_exit.Y), Color.White);
+            _spriteBatch.Draw(ExitTexture, _exit, Color.White);
 
             _spriteBatch.End();
 
