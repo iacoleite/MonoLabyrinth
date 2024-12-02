@@ -31,6 +31,7 @@ namespace MovingRectangleGame
 
         private Texture2D ExitTexture;
         private Texture2D PlayerTexture;
+        private Texture2D ObstacleTexture;
 
         public List<Rectangle> obs= new List<Rectangle>();
         public Game1()
@@ -128,12 +129,13 @@ namespace MovingRectangleGame
             // ExitTexture=new Texture2D(GraphicsDevice, 1, 1);
             ExitTexture=Content.Load<Texture2D>("person");
             PlayerTexture = Content.Load<Texture2D>("stickman");
+            ObstacleTexture = Content.Load<Texture2D>("brick22");
 
 
             // ExitTexture.SetData(new[] { Color.Black }); 
 
-            _obstacleTexture = new Texture2D(GraphicsDevice, 1, 1);
-            _obstacleTexture.SetData(new[] { Color.White }); 
+            // _obstacleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            // _obstacleTexture.SetData(new[] { Color.White }); 
         }
 
         protected override void Update(GameTime gameTime)
@@ -195,7 +197,7 @@ namespace MovingRectangleGame
         protected override void Draw(GameTime gameTime)
         {
                     
-            _graphics.GraphicsDevice.Clear(Color.Green);
+            _graphics.GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
 
@@ -204,7 +206,7 @@ namespace MovingRectangleGame
 
             // Disegna l'ostacolo
             foreach(var ob in obs){
-              _spriteBatch.Draw(_obstacleTexture, ob, Color.White);
+              _spriteBatch.Draw(ObstacleTexture, ob, Color.White);
             }
             
             // _spriteBatch.Draw(ExitTexture,_exit,Color.White);
