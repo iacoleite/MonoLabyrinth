@@ -30,6 +30,7 @@ namespace MovingRectangleGame
         private Texture2D _obstacleTexture;
 
         private Texture2D ExitTexture;
+        private Texture2D PlayerTexture;
 
         public List<Rectangle> obs= new List<Rectangle>();
         public Game1()
@@ -50,21 +51,21 @@ namespace MovingRectangleGame
 
             // Inizializzazione del rettangolo del giocatore
 
-            Random random= new Random();
+            // Random random= new Random();
 
             // Inizializzazione dell'ostacolo
-            int _nOstacolli = 50;
+            // int _nOstacolli = 50;
 
             int screenWidth = _graphics.PreferredBackBufferWidth-100;
             int screenHeight = _graphics.PreferredBackBufferHeight-100;
-            int gridWidth = Math.Abs(screenWidth/37);
-            int gridHeight = Math.Abs(screenHeight/37);
+            int gridWidth = Math.Abs(screenWidth/43);
+            int gridHeight = Math.Abs(screenHeight/39);
 
-            // Console.WriteLine(screenHeight);
-            // Console.WriteLine(screenWidth);
-            // Console.WriteLine(gridHeight);
-            // Console.WriteLine(gridWidth);
-            MazeGenerator mazeGenerator = new MazeGenerator();
+            Console.WriteLine(screenHeight);
+            Console.WriteLine(screenWidth);
+            Console.WriteLine(gridHeight);
+            Console.WriteLine(gridWidth);
+            // MazeGenerator mazeGenerator = new MazeGenerator();
             
             // mazeGenerator.GenerateMaze();
             // int[,] teste = mazeGenerator.GetMaze();
@@ -72,8 +73,14 @@ namespace MovingRectangleGame
 
             //     Console.WriteLine(i);
             // }
+            
+            
+            MazeGenerator.width = gridWidth;
+            MazeGenerator.height = gridHeight;
             MazeGenerator.GenerateMaze();
+
             int [,] teste = MazeGenerator.PrintMaze();
+
 
             for (int i = 0; i < MazeGenerator.width; i++) {
                 for (int j = 0; j < MazeGenerator.height; j++) {
@@ -85,6 +92,7 @@ namespace MovingRectangleGame
                     }
                 }
             }
+            
             _player = new Rectangle(150, 50, 30, 30);
             _exit = new Rectangle(1700, 935, 30, 30);
 
@@ -107,13 +115,11 @@ namespace MovingRectangleGame
 
         protected override void LoadContent()
         {
-                        
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Crea una texture per colorare il rettangolo del giocatore
-            _playerTexture = new Texture2D(GraphicsDevice, 1, 1);
-            _playerTexture.SetData(new[] { Color.Red }); // Rettangolo rosso
+            // _playerTexture = new Texture2D(GraphicsDevice, 1, 1);
+            // _playerTexture.SetData(new[] { Color.Red }); // Rettangolo rosso
 
             // Crea una texture per colorare l'ostacolo
 
@@ -121,6 +127,7 @@ namespace MovingRectangleGame
 
             // ExitTexture=new Texture2D(GraphicsDevice, 1, 1);
             ExitTexture=Content.Load<Texture2D>("person");
+            PlayerTexture = Content.Load<Texture2D>("stickman");
 
 
             // ExitTexture.SetData(new[] { Color.Black }); 
@@ -193,7 +200,7 @@ namespace MovingRectangleGame
             _spriteBatch.Begin();
 
             // Disegna il rettangolo del giocatore
-            _spriteBatch.Draw(_playerTexture, _player, Color.White);
+            _spriteBatch.Draw(PlayerTexture, _player, Color.White);
 
             // Disegna l'ostacolo
             foreach(var ob in obs){

@@ -25,3 +25,15 @@
 /processorParam:TextureFormat=Color
 /build:person.png
 
+#begin toppng.com-running-stick-figure-png-stickman-1167x1280.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:toppng.com-running-stick-figure-png-stickman-1167x1280.png;stickman.png
+
