@@ -155,20 +155,24 @@ namespace MovingRectangleGame
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                _player.Y -= _playerSpeed; PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None; lastVerticalDirection = "up";
+                _player.Y -= _playerSpeed; PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                 lastVerticalDirection = "up";
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) {
                  _player.Y += _playerSpeed;
-                  PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                   lastVerticalDirection = "down"; }
+                  PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally| SpriteEffects.FlipVertically : SpriteEffects.FlipVertically;
+                   lastVerticalDirection = "down";
+            }
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) {
                  _player.X -= _playerSpeed;
                   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
-                   lastHorizontalDirection = "left"; }
+                   lastHorizontalDirection = "left";
+            }
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) {
                  _player.X += _playerSpeed;
                   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipVertically : SpriteEffects.None;
-                   lastHorizontalDirection = "right"; }
+                   lastHorizontalDirection = "right";
+            }
 
             // Aumenta velocità con Shift
             if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
