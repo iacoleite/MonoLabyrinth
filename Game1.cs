@@ -24,16 +24,22 @@ namespace MovingRectangleGame
         // Texture per il rettangolo del giocatore
         private Texture2D _playerTexture;
 
-       
+
         // Ostacoli
         private Rectangle _exit;
         private Texture2D _obstacleTexture;
 
         private Texture2D ExitTexture;
         private Texture2D PlayerTexture;
-        private Texture2D ObstacleTexture;
+        private SpriteEffects PlayerTextureFX = SpriteEffects.None;
 
-        public List<Rectangle> obs= new List<Rectangle>();
+        private Texture2D ObstacleTexture;
+        private float rotationAngle = 0;
+        private Vector2 spriteOrigin;
+        private string lastHorizontalDirection = "right";
+        private string lastVerticalDirection = "up";
+
+        public List<Rectangle> obs = new List<Rectangle>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -47,8 +53,6 @@ namespace MovingRectangleGame
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.ApplyChanges();
-            
-
 
             // Inizializzazione del rettangolo del giocatore
 
@@ -57,50 +61,52 @@ namespace MovingRectangleGame
             // Inizializzazione dell'ostacolo
             // int _nOstacolli = 50;
 
-            int screenWidth = _graphics.PreferredBackBufferWidth-100;
-            int screenHeight = _graphics.PreferredBackBufferHeight-100;
-            int gridWidth = Math.Abs(screenWidth/43);
-            int gridHeight = Math.Abs(screenHeight/39);
+            int screenWidth = _graphics.PreferredBackBufferWidth - 100;
+            int screenHeight = _graphics.PreferredBackBufferHeight - 100;
+            int gridWidth = Math.Abs(screenWidth / 43);
+            int gridHeight = Math.Abs(screenHeight / 39);
 
             Console.WriteLine(screenHeight);
             Console.WriteLine(screenWidth);
             Console.WriteLine(gridHeight);
             Console.WriteLine(gridWidth);
             // MazeGenerator mazeGenerator = new MazeGenerator();
-            
+
             // mazeGenerator.GenerateMaze();
             // int[,] teste = mazeGenerator.GetMaze();
             // foreach(int i in teste) {
 
             //     Console.WriteLine(i);
             // }
-            
-            
+
             MazeGenerator.width = gridWidth;
             MazeGenerator.height = gridHeight;
             MazeGenerator.GenerateMaze();
 
-            int [,] teste = MazeGenerator.PrintMaze();
+            int[,] teste = MazeGenerator.GetMaze();
 
-
-            for (int i = 0; i < MazeGenerator.width; i++) {
-                for (int j = 0; j < MazeGenerator.height; j++) {
-                    if (teste[i,j] == 1) {
-                        var ob=new Rectangle(100 + i * 40, 10 + j * 40, 40, 40);
-                        if(!ob.Intersects(_exit) || !(i == 0 && j == 0)) {
-                        obs.Add(ob);
+            for (int i = 0; i < MazeGenerator.width; i++)
+            {
+                for (int j = 0; j < MazeGenerator.height; j++)
+                {
+                    if (teste[i, j] == 1)
+                    {
+                        var ob = new Rectangle(100 + i * 40, 10 + j * 40, 40, 40);
+                        if (!ob.Intersects(_exit) || !(i == 0 && j == 0))
+                        {
+                            obs.Add(ob);
                         }
                     }
                 }
             }
-            
+
             _player = new Rectangle(150, 50, 30, 30);
             _exit = new Rectangle(1700, 935, 30, 30);
 
             // for(int I=0;I<_nOstacolli;I++){
-                
+
             //     int xx=random.Next(100,_graphics.PreferredBackBufferWidth-100);
-                
+
             //     int yy=random.Next(1,_graphics.PreferredBackBufferHeight);
             //     var ob=new Rectangle(xx, yy, 80, 20);
             //     if(ob.Intersects(_exit) || obs.Any(ele => ob.Intersects(ele))){
@@ -111,8 +117,7 @@ namespace MovingRectangleGame
             // }
 
             base.Initialize();
-            }
-        
+        }
 
         protected override void LoadContent()
         {
@@ -127,10 +132,11 @@ namespace MovingRectangleGame
             //  _obstacleTexture=Content.Load<Texture2D>("obsta1");
 
             // ExitTexture=new Texture2D(GraphicsDevice, 1, 1);
-            ExitTexture=Content.Load<Texture2D>("person");
+            ExitTexture = Content.Load<Texture2D>("person");
             PlayerTexture = Content.Load<Texture2D>("stickman");
             ObstacleTexture = Content.Load<Texture2D>("brick22");
-
+            spriteOrigin.X = 0;//PlayerTexture.Height/2 ;
+            spriteOrigin.Y = 0;//PlayerTexture.Width/2;
 
             // ExitTexture.SetData(new[] { Color.Black }); 
 
@@ -147,14 +153,22 @@ namespace MovingRectangleGame
             // Gestione movimento
             var keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W) )
-                _player.Y -= _playerSpeed;
-            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S) )
-                _player.Y += _playerSpeed;
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A) )
-                _player.X -= _playerSpeed;
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D) )
-                _player.X += _playerSpeed;
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            {
+                _player.Y -= _playerSpeed; PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None; lastVerticalDirection = "up";
+            }
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) {
+                 _player.Y += _playerSpeed;
+                  PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                   lastVerticalDirection = "down"; }
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) {
+                 _player.X -= _playerSpeed;
+                  PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
+                   lastHorizontalDirection = "left"; }
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) {
+                 _player.X += _playerSpeed;
+                  PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipVertically : SpriteEffects.None;
+                   lastHorizontalDirection = "right"; }
 
             // Aumenta velocità con Shift
             if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
@@ -167,48 +181,56 @@ namespace MovingRectangleGame
             _player.Y = System.Math.Clamp(_player.Y, 0, _graphics.PreferredBackBufferHeight - _player.Height);
 
             // Controllo collisione con l'ostacolo
-            foreach(var ob in obs){
-
-                 if (_player.Intersects(ob))
+            foreach (var ob in obs)
             {
-                // Sposta il giocatore indietro
-                if (keyboardState.IsKeyDown(Keys.Up)|| keyboardState.IsKeyDown(Keys.W) )
-                    _player.Y += _playerSpeed;
-                if (keyboardState.IsKeyDown(Keys.Down)|| keyboardState.IsKeyDown(Keys.S) )
-                    _player.Y -= _playerSpeed;
-                if (keyboardState.IsKeyDown(Keys.Left)|| keyboardState.IsKeyDown(Keys.A) )
-                    _player.X += _playerSpeed;
-                if (keyboardState.IsKeyDown(Keys.Right)|| keyboardState.IsKeyDown(Keys.D) )
-                    _player.X -= _playerSpeed;
+
+                if (_player.Intersects(ob))
+                {
+                    // Sposta il giocatore indietro
+                    if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+                        _player.Y += _playerSpeed;
+                    if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+                        _player.Y -= _playerSpeed;
+
+                    if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+                        _player.X += _playerSpeed;
+
+                    if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+                        _player.X -= _playerSpeed;
+
+                }
             }
+
+
+            if (_player.Intersects(_exit))
+            {
+                //  _spriteBatch.DrawString(_font, "Attenzione: qualcosa è andato storto!", new Vector2(100, 100), Color.Red);
+                Thread.Sleep(2000);
+                obs.Clear();
+                Initialize();
             }
-           
-           
-           if (_player.Intersects(_exit)){
-            //  _spriteBatch.DrawString(_font, "Attenzione: qualcosa è andato storto!", new Vector2(100, 100), Color.Red);
-            Thread.Sleep(2000);
-            obs.Clear();
-            Initialize();
-           }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-                    
+
             _graphics.GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
 
             // Disegna il rettangolo del giocatore
-            _spriteBatch.Draw(PlayerTexture, _player, Color.White);
+            // _spriteBatch.Draw(PlayerTexture, _player, Color.White);
+            _spriteBatch.Draw(PlayerTexture, _player.Location.ToVector2(), null, Color.White, rotationAngle,
+            spriteOrigin, 0.02f, PlayerTextureFX, 0f);
 
             // Disegna l'ostacolo
-            foreach(var ob in obs){
-              _spriteBatch.Draw(ObstacleTexture, ob, Color.White);
+            foreach (var ob in obs)
+            {
+                _spriteBatch.Draw(ObstacleTexture, ob, Color.White);
             }
-            
+
             // _spriteBatch.Draw(ExitTexture,_exit,Color.White);
             _spriteBatch.Draw(ExitTexture, _exit, Color.White);
 

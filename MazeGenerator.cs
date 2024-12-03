@@ -10,8 +10,6 @@ class MazeGenerator
     public static int[,] maze = new int[width, height];
     public static Random rand = new Random();
 
-
-
     public static void GenerateMaze()
     {
         // Initialize the maze with walls (1)
@@ -19,7 +17,11 @@ class MazeGenerator
         {
             for (int j = 0; j < height; j++)
             {
-                maze[i, j] = 1;
+                if (i==width-1) {
+                    maze[i, j] = 0;
+                } else {
+                    maze[i, j] = 1;
+                }
             }
         }
 
@@ -63,16 +65,16 @@ class MazeGenerator
         }
     }
 
-    public static int[,] PrintMaze()
+    public static int[,] GetMaze()
     {
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                Console.Write(maze[i, j] + " ");
-            }
-            Console.WriteLine();
-        }
+        // for (int i = 0; i < width; i++)
+        // {
+        //     for (int j = 0; j < height; j++)
+        //     {
+        //         Console.Write(maze[i, j] + " ");
+        //     }
+        //     Console.WriteLine();
+        // }
         return maze;
     }
     
