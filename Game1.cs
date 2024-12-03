@@ -35,7 +35,7 @@ namespace MovingRectangleGame
 
         private Texture2D ObstacleTexture;
         private float rotationAngle = 0;
-        private Vector2 spriteOrigin;
+        // private Vector2 spriteOrigin;
         private string lastHorizontalDirection = "right";
         private string lastVerticalDirection = "up";
 
@@ -133,11 +133,11 @@ namespace MovingRectangleGame
 
             // ExitTexture=new Texture2D(GraphicsDevice, 1, 1);
             ExitTexture = Content.Load<Texture2D>("person");
-            PlayerTexture = Content.Load<Texture2D>("stickman");
+            PlayerTexture = Content.Load<Texture2D>("mouse");
             ObstacleTexture = Content.Load<Texture2D>("brick22");
-            spriteOrigin.X = 0;//PlayerTexture.Height/2 ;
-            spriteOrigin.Y = 0;//PlayerTexture.Width/2;
-
+            // spriteOrigin.X = PlayerTexture.Height/2 ;
+            // spriteOrigin.Y = PlayerTexture.Width/2;
+            
             // ExitTexture.SetData(new[] { Color.Black }); 
 
             // _obstacleTexture = new Texture2D(GraphicsDevice, 1, 1);
@@ -155,23 +155,30 @@ namespace MovingRectangleGame
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                _player.Y -= _playerSpeed; PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                 lastVerticalDirection = "up";
+                _player.Y -= _playerSpeed; 
+                // PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                lastVerticalDirection = "up";
+                rotationAngle = MathHelper.ToRadians(180);
+                
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) {
                  _player.Y += _playerSpeed;
-                  PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally| SpriteEffects.FlipVertically : SpriteEffects.FlipVertically;
+                //   PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally| SpriteEffects.FlipVertically : SpriteEffects.FlipVertically;
                    lastVerticalDirection = "down";
+                   rotationAngle = MathHelper.ToRadians(0);
             }
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) {
                  _player.X -= _playerSpeed;
-                  PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
+                //   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
                    lastHorizontalDirection = "left";
+                   rotationAngle = MathHelper.ToRadians(90);
+
             }
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) {
                  _player.X += _playerSpeed;
-                  PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipVertically : SpriteEffects.None;
+                //   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipVertically : SpriteEffects.None;
                    lastHorizontalDirection = "right";
+                   rotationAngle = MathHelper.ToRadians(270);
             }
 
             // Aumenta velocità con Shift
@@ -195,10 +202,8 @@ namespace MovingRectangleGame
                         _player.Y += _playerSpeed;
                     if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
                         _player.Y -= _playerSpeed;
-
                     if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
                         _player.X += _playerSpeed;
-
                     if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
                         _player.X -= _playerSpeed;
 
@@ -223,11 +228,20 @@ namespace MovingRectangleGame
             _graphics.GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
+            Vector2 spriteOrigin = new Vector2(PlayerTexture.Width / 2, PlayerTexture.Height /2);
 
+            Vector2 spritePosition = new Vector2(_player.X + _player.Width / 2, _player.Y + _player.Height / 2);
             // Disegna il rettangolo del giocatore
             // _spriteBatch.Draw(PlayerTexture, _player, Color.White);
-            _spriteBatch.Draw(PlayerTexture, _player.Location.ToVector2(), null, Color.White, rotationAngle,
-            spriteOrigin, 0.02f, PlayerTextureFX, 0f);
+            _spriteBatch.Draw(PlayerTexture,
+             spritePosition,
+              null,
+               Color.White,
+                rotationAngle,
+            spriteOrigin, 
+            0.06f, 
+            PlayerTextureFX, 
+            0f);
 
             // Disegna l'ostacolo
             foreach (var ob in obs)
