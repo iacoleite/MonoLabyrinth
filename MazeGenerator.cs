@@ -17,17 +17,18 @@ class MazeGenerator
         {
             for (int j = 0; j < height; j++)
             {
-                if (i==width-1) {
-                    maze[i, j] = 0;
-                } else {
+                // if (i==width-1) {
+                //     maze[i, j] = 0;
+                // } else {
                     maze[i, j] = 1;
-                }
+                // }
             }
         }
 
         // Start the maze generation from the top-left corner
         DFS(1, 1);
-
+                // ensure the start point is open
+        maze[1, 1] = 0;
         // Ensure the exit point is open
         maze[width - 2, height - 2] = 0;
     }
@@ -53,6 +54,16 @@ class MazeGenerator
         // Visit each direction
         for (int i = 0; i < 4; i++)
         {
+            // for (int j = 0; j < 2; j++)
+            // {
+            //     int r = rand.Next(4);
+            //     int temp = dx[j];
+            //     dx[j] = dx[r];
+            //     dx[r] = temp;
+            //     temp = dy[j];
+            //     dy[j] = dy[r];
+            //     dy[r] = temp;
+            // }
             int nx = x + dx[i] * 2;
             int ny = y + dy[i] * 2;
 
@@ -67,15 +78,18 @@ class MazeGenerator
 
     public static int[,] GetMaze()
     {
-        // for (int i = 0; i < width; i++)
-        // {
-        //     for (int j = 0; j < height; j++)
-        //     {
-        //         Console.Write(maze[i, j] + " ");
-        //     }
-        //     Console.WriteLine();
-        // }
         return maze;
+    }
+
+    public static void PrintMaze() {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                Console.Write(maze[i, j] + " ");
+            }
+            Console.WriteLine();
+        }
     }
     
 }

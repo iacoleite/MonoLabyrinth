@@ -23,8 +23,9 @@ namespace MovingRectangleGame
 
         // Texture per il rettangolo del giocatore
         private Texture2D _playerTexture;
+        private Texture2D CheeseTexture;
 
-
+        private Rectangle cheese;
         // Ostacoli
         private Rectangle _exit;
         private Texture2D _obstacleTexture;
@@ -32,6 +33,7 @@ namespace MovingRectangleGame
         private Texture2D ExitTexture;
         private Texture2D PlayerTexture;
         private SpriteEffects PlayerTextureFX = SpriteEffects.None;
+        public static Random rand = new Random();
 
         private Texture2D ObstacleTexture;
         private float rotationAngle = 0;
@@ -40,6 +42,7 @@ namespace MovingRectangleGame
         private string lastVerticalDirection = "up";
 
         public List<Rectangle> obs = new List<Rectangle>();
+        public List<Rectangle> cheeseArray = new List<Rectangle>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -100,8 +103,23 @@ namespace MovingRectangleGame
                 }
             }
 
+            // generate cheeses
+            for (int i = 0; i < 5 ; i++) {
+                int x = rand.Next(0, MazeGenerator.width-1);
+                int y = rand.Next(0, MazeGenerator.height-1);
+                if (teste[x, y] == 0)
+                    {
+                    cheese = new Rectangle(105 + x * 40, 15 + y * 40, 30, 30);
+                    cheeseArray.Add(cheese);
+                    } else {
+                        i--;
+                    }   
+            }
             _player = new Rectangle(150, 50, 30, 30);
             _exit = new Rectangle(1700, 935, 30, 30);
+            
+            
+            
 
             // for(int I=0;I<_nOstacolli;I++){
 
@@ -135,6 +153,7 @@ namespace MovingRectangleGame
             ExitTexture = Content.Load<Texture2D>("person");
             PlayerTexture = Content.Load<Texture2D>("mouse");
             ObstacleTexture = Content.Load<Texture2D>("brick22");
+            CheeseTexture = Content.Load<Texture2D>("cheese-4946581_640");
             // spriteOrigin.X = PlayerTexture.Height/2 ;
             // spriteOrigin.Y = PlayerTexture.Width/2;
             
@@ -194,7 +213,6 @@ namespace MovingRectangleGame
             // Controllo collisione con l'ostacolo
             foreach (var ob in obs)
             {
-
                 if (_player.Intersects(ob))
                 {
                     // Sposta il giocatore indietro
@@ -206,18 +224,25 @@ namespace MovingRectangleGame
                         _player.X += _playerSpeed;
                     if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
                         _player.X -= _playerSpeed;
-
                 }
             }
 
 
-            if (_player.Intersects(_exit))
+            if (_player.Intersects(_exit) && cheeseArray.Count == 0)
             {
                 //  _spriteBatch.DrawString(_font, "Attenzione: qualcosa è andato storto!", new Vector2(100, 100), Color.Red);
                 Thread.Sleep(2000);
                 obs.Clear();
                 Initialize();
             }
+
+        for (int i = cheeseArray.Count - 1; i >= 0; i--)
+        {
+            if (_player.Intersects(cheeseArray[i]))
+            {
+                cheeseArray.RemoveAt(i);
+            }
+        }
 
             base.Update(gameTime);
         }
@@ -233,15 +258,7 @@ namespace MovingRectangleGame
             Vector2 spritePosition = new Vector2(_player.X + _player.Width / 2, _player.Y + _player.Height / 2);
             // Disegna il rettangolo del giocatore
             // _spriteBatch.Draw(PlayerTexture, _player, Color.White);
-            _spriteBatch.Draw(PlayerTexture,
-             spritePosition,
-              null,
-               Color.White,
-                rotationAngle,
-            spriteOrigin, 
-            0.06f, 
-            PlayerTextureFX, 
-            0f);
+            _spriteBatch.Draw(PlayerTexture,spritePosition,null,Color.White,rotationAngle,spriteOrigin,0.06f,PlayerTextureFX,0f);
 
             // Disegna l'ostacolo
             foreach (var ob in obs)
@@ -249,8 +266,13 @@ namespace MovingRectangleGame
                 _spriteBatch.Draw(ObstacleTexture, ob, Color.White);
             }
 
+
             // _spriteBatch.Draw(ExitTexture,_exit,Color.White);
             _spriteBatch.Draw(ExitTexture, _exit, Color.White);
+
+            foreach (var cheese in cheeseArray) {
+                _spriteBatch.Draw(CheeseTexture, cheese, Color.White);
+            }
 
             _spriteBatch.End();
 
