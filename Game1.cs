@@ -151,7 +151,7 @@ namespace MovingRectangleGame
 
             // ExitTexture=new Texture2D(GraphicsDevice, 1, 1);
             ExitTexture = Content.Load<Texture2D>("person");
-            PlayerTexture = Content.Load<Texture2D>("mouse");
+            PlayerTexture = Content.Load<Texture2D>("mouseB");
             ObstacleTexture = Content.Load<Texture2D>("brick22");
             CheeseTexture = Content.Load<Texture2D>("cheese-4946581_640");
             // spriteOrigin.X = PlayerTexture.Height/2 ;
