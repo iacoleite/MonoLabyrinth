@@ -236,21 +236,23 @@ namespace MovingRectangleGame
                 Initialize();
             }
 
-        for (int i = cheeseArray.Count - 1; i >= 0; i--)
-        {
-            if (_player.Intersects(cheeseArray[i]))
-            {
-                cheeseArray.RemoveAt(i);
-            }
-        }
-
+        // for (int i = cheeseArray.Count - 1; i >= 0; i--)
+        // {
+        //     if (_player.Intersects(cheeseArray[i]))
+        //     {
+        //         cheeseArray.RemoveAt(i);
+        //     }
+        // }
+            
+            cheeseArray.RemoveAll(cheese => _player.Intersects(cheese));
+            
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
 
-            _graphics.GraphicsDevice.Clear(Color.Gray);
+            _graphics.GraphicsDevice.Clear(Color.LightSkyBlue);
 
             _spriteBatch.Begin();
             Vector2 spriteOrigin = new Vector2(PlayerTexture.Width / 2, PlayerTexture.Height /2);
