@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections;
-
 
 namespace MovingRectangleGame
 {
@@ -22,13 +18,13 @@ namespace MovingRectangleGame
         private int _maxSpeed = 10;
 
         // Texture per il rettangolo del giocatore
-        private Texture2D _playerTexture;
+        // private Texture2D _playerTexture;
         private Texture2D CheeseTexture;
 
         private Rectangle cheese;
         // Ostacoli
         private Rectangle _exit;
-        private Texture2D _obstacleTexture;
+        // private Texture2D _obstacleTexture;
 
         private Texture2D ExitTexture;
         private Texture2D PlayerTexture;
@@ -38,8 +34,8 @@ namespace MovingRectangleGame
         private Texture2D ObstacleTexture;
         private float rotationAngle = 0;
         // private Vector2 spriteOrigin;
-        private string lastHorizontalDirection = "right";
-        private string lastVerticalDirection = "up";
+        private string lastHorizontalDirection;
+        private string lastVerticalDirection;
 
         public List<Rectangle> obs = new List<Rectangle>();
         public List<Rectangle> cheeseArray = new List<Rectangle>();
@@ -104,27 +100,25 @@ namespace MovingRectangleGame
             }
 
             // generate cheeses
-            for (int i = 0; i < 5 ; i++) {
-                int x = rand.Next(0, MazeGenerator.width-1);
-                int y = rand.Next(0, MazeGenerator.height-1);
+            for (int i = 0; i < 5; i++)
+            {
+                int x = rand.Next(0, MazeGenerator.width - 1);
+                int y = rand.Next(0, MazeGenerator.height - 1);
                 if (teste[x, y] == 0)
-                    {
+                {
                     cheese = new Rectangle(105 + x * 40, 15 + y * 40, 30, 30);
                     cheeseArray.Add(cheese);
-                    } else {
-                        i--;
-                    }   
+                }
+                else
+                {
+                    i--;
+                }
             }
             _player = new Rectangle(150, 50, 30, 30);
             _exit = new Rectangle(1700, 935, 30, 30);
-            
-            
-            
 
             // for(int I=0;I<_nOstacolli;I++){
-
             //     int xx=random.Next(100,_graphics.PreferredBackBufferWidth-100);
-
             //     int yy=random.Next(1,_graphics.PreferredBackBufferHeight);
             //     var ob=new Rectangle(xx, yy, 80, 20);
             //     if(ob.Intersects(_exit) || obs.Any(ele => ob.Intersects(ele))){
@@ -156,7 +150,7 @@ namespace MovingRectangleGame
             CheeseTexture = Content.Load<Texture2D>("cheese-4946581_640");
             // spriteOrigin.X = PlayerTexture.Height/2 ;
             // spriteOrigin.Y = PlayerTexture.Width/2;
-            
+
             // ExitTexture.SetData(new[] { Color.Black }); 
 
             // _obstacleTexture = new Texture2D(GraphicsDevice, 1, 1);
@@ -174,30 +168,33 @@ namespace MovingRectangleGame
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                _player.Y -= _playerSpeed; 
+                _player.Y -= _playerSpeed;
                 // PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                 lastVerticalDirection = "up";
                 rotationAngle = MathHelper.ToRadians(180);
-                
-            }
-            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) {
-                 _player.Y += _playerSpeed;
-                //   PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally| SpriteEffects.FlipVertically : SpriteEffects.FlipVertically;
-                   lastVerticalDirection = "down";
-                   rotationAngle = MathHelper.ToRadians(0);
-            }
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) {
-                 _player.X -= _playerSpeed;
-                //   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
-                   lastHorizontalDirection = "left";
-                   rotationAngle = MathHelper.ToRadians(90);
 
             }
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) {
-                 _player.X += _playerSpeed;
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            {
+                _player.Y += _playerSpeed;
+                //   PlayerTextureFX = (lastHorizontalDirection == "left") ? SpriteEffects.FlipHorizontally| SpriteEffects.FlipVertically : SpriteEffects.FlipVertically;
+                lastVerticalDirection = "down";
+                rotationAngle = MathHelper.ToRadians(0);
+            }
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+            {
+                _player.X -= _playerSpeed;
+                //   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically : SpriteEffects.FlipHorizontally;
+                lastHorizontalDirection = "left";
+                rotationAngle = MathHelper.ToRadians(90);
+
+            }
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            {
+                _player.X += _playerSpeed;
                 //   PlayerTextureFX = (lastVerticalDirection == "down") ? SpriteEffects.FlipVertically : SpriteEffects.None;
-                   lastHorizontalDirection = "right";
-                   rotationAngle = MathHelper.ToRadians(270);
+                lastHorizontalDirection = "right";
+                rotationAngle = MathHelper.ToRadians(270);
             }
 
             // Aumenta velocità con Shift
@@ -236,16 +233,15 @@ namespace MovingRectangleGame
                 Initialize();
             }
 
-        // for (int i = cheeseArray.Count - 1; i >= 0; i--)
-        // {
-        //     if (_player.Intersects(cheeseArray[i]))
-        //     {
-        //         cheeseArray.RemoveAt(i);
-        //     }
-        // }
-            
+            // for (int i = cheeseArray.Count - 1; i >= 0; i--)
+            // {
+            //     if (_player.Intersects(cheeseArray[i]))
+            //     {
+            //         cheeseArray.RemoveAt(i);
+            //     }
+            // }
+
             cheeseArray.RemoveAll(cheese => _player.Intersects(cheese));
-            
             base.Update(gameTime);
         }
 
@@ -255,12 +251,12 @@ namespace MovingRectangleGame
             _graphics.GraphicsDevice.Clear(Color.LightSkyBlue);
 
             _spriteBatch.Begin();
-            Vector2 spriteOrigin = new Vector2(PlayerTexture.Width / 2, PlayerTexture.Height /2);
+            Vector2 spriteOrigin = new Vector2(PlayerTexture.Width / 2, PlayerTexture.Height / 2);
 
             Vector2 spritePosition = new Vector2(_player.X + _player.Width / 2, _player.Y + _player.Height / 2);
             // Disegna il rettangolo del giocatore
             // _spriteBatch.Draw(PlayerTexture, _player, Color.White);
-            _spriteBatch.Draw(PlayerTexture,spritePosition,null,Color.White,rotationAngle,spriteOrigin,0.06f,PlayerTextureFX,0f);
+            _spriteBatch.Draw(PlayerTexture, spritePosition, null, Color.White, rotationAngle, spriteOrigin, 0.06f, PlayerTextureFX, 0f);
 
             // Disegna l'ostacolo
             foreach (var ob in obs)
@@ -272,7 +268,8 @@ namespace MovingRectangleGame
             // _spriteBatch.Draw(ExitTexture,_exit,Color.White);
             _spriteBatch.Draw(ExitTexture, _exit, Color.White);
 
-            foreach (var cheese in cheeseArray) {
+            foreach (var cheese in cheeseArray)
+            {
                 _spriteBatch.Draw(CheeseTexture, cheese, Color.White);
             }
 
